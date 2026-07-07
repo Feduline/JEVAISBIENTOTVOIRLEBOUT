@@ -264,9 +264,18 @@ st.title("📋 Générateur de Fiches Horaires")
 
 SOCIETES = ['GEA GAUMETOUS', 'Fed Agri', 'Feduline', 'Feduline II',
             'Paulhiac', 'Les Jardins de Casseneuil']
-MOIS_OPTIONS = {f"{MOIS_FR[m]} {a}": (a, m)
-                for a in [2025, 2026, 2027]
-                for m in range(1, 13)}
+# Génère dynamiquement les 24 prochains mois + les 3 mois passés
+def _gen_mois_options():
+    today = datetime.date.today()
+    start = datetime.date(today.year, today.month, 1)
+    # 3 mois en arrière
+    opts = {}
+    for delta in range(-3, 25):
+        y = start.year + (start.month - 1 + delta) // 12
+        m = (start.month - 1 + delta) % 12 + 1
+        opts[f"{MOIS_FR[m]} {y}"] = (y, m)
+    return opts
+MOIS_OPTIONS = _gen_mois_options()
 
 tab1, tab2 = st.tabs(["✏️ Saisie manuelle", "📂 Import liste Excel"])
 
